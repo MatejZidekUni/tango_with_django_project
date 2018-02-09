@@ -35,6 +35,41 @@ class Chapter7ViewTests(TestCase):
         # Check if there is text and a link to add category
         self.assertIn('href="' + reverse('add_category') + '"', response.content.decode('ascii'))
 
+
+    @chapter7
+    def test_form_error_when_category_field_empty(self):
+
+        # Access index page
+
+        url = self.live_server_url
+
+        url = url.replace('localhost', '127.0.0.1')
+
+        self.browser.get(url + reverse('index'))
+
+ 
+
+        # Check if is there link to add categories
+
+        categories_link = self.browser.find_elements_by_partial_link_text('Add a New Category')
+
+        if len(categories_link) == 0:
+
+            categories_link = self.browser.find_elements_by_partial_link_text('Add New Category')
+
+ 
+
+        categories_link[0].click()
+
+ 
+
+        url_path = self.browser.current_url
+
+        response = self.client.get(url_path)
+
+ 
+
+        self.assertIn('required'.lower(), response.content.lower())
     @chapter7
     def test_add_category_form_is_displayed_correctly(self):
         # Access add category page
